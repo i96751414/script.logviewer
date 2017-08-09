@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="script.logviewer" name="Log Viewer for Kodi" provider-name="i96751414" version="2.0.0">
+    <requires>
+        <import addon="xbmc.python" version="2.14.0"/>
+    </requires>
+    <extension point="xbmc.python.script" library="default.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.service" library="service.py" start="login"/>
+    <extension library="lib" point="xbmc.python.module"/>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <forum>http://forum.kodi.tv/showthread.php?tid=223490</forum>
+        <summary lang="en">View Kodi logfile directly on Kodi</summary>
+        <summary lang="pt">Veja o log do Kodi directamente no Kodi</summary>
+        <description lang="en">Tools to easily check and analyse Kodi log file.</description>
+        <description lang="pt">Ferramenta para verificar e ler facilmente o log do Kodi.</description>
+        <platform>all</platform>
+        <news>
+- Fix text box not opening
+- Added a custom window for reading log
+- Changed all api calls: xbmc.executebuiltin("RunScript(script.logviewer, show_log)")
+- Added service for monitoring errors
+        </news>
+    </extension>
+</addon>

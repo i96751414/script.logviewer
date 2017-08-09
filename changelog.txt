@@ -1,0 +1,28 @@
+[B]v2.0.0 (7 August 2017):[/B]
+- Fix window not opening
+- Added a custom window for reading log
+- Changed from plugin to script
+- Changed all api calls: xbmc.executebuiltin("RunScript(script.logviewer, show_log)")
+- Added service for monitoring errors
+
+[B]v1.0.0 (5 April 2015):[/B]
+- Full addon change and recode.
+- Check forum.kodi topic to know how to use addon API.
+
+[B]v0.1.01 (30 January 2015):[/B]
+- Changed addon name
+- Added API call to obtain log contents (plugin://plugin.video.xbmclogviewer/getlog/)
+- Added Kodi support
+- Minor fixes and improvements
+
+[B]v0.1.00 (13 November 2014):[/B]
+- Added setting to invert log
+- Added setting to show some lines only
+- Performance improvements
+- Added API call to show log: xbmc.executebuiltin("RunPlugin(plugin://plugin.video.xbmclogviewer/showlog/)")
+
+[B]v0.0.02 (21 December 2013):[/B]
+- Logo added.
+
+[B]v0.0.01 (17 December 2013):[/B]
+- Initial release.
