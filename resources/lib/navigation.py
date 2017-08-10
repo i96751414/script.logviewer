@@ -15,16 +15,16 @@ def get_opts():
 
     # Show log
     headings.append(utils.translate(30001))
-    handlers.append(show_log)
+    handlers.append(lambda: show_log(False))
 
     # Show old log
     headings.append(utils.translate(30002))
-    handlers.append(show_old_log)
+    handlers.append(lambda: show_log(True))
 
     # Upload log
     if has_addon("script.kodi.loguploader"):
         headings.append(utils.translate(30015))
-        handlers.append(upload_log)
+        handlers.append(lambda: xbmc.executebuiltin("RunScript(script.kodi.loguploader)"))
 
     # Open Settings
     headings.append(utils.translate(30011))
@@ -33,18 +33,9 @@ def get_opts():
     return headings, handlers
 
 
-def show_log():
-    content = logviewer.get_content(False, utils.get_inverted(), utils.get_lines(), True)
+def show_log(old):
+    content = logviewer.get_content(old, utils.get_inverted(), utils.get_lines(), True)
     logviewer.window(utils.ADDON_NAME, content, default=utils.is_default_window())
-
-
-def show_old_log():
-    content = logviewer.get_content(True, utils.get_inverted(), utils.get_lines(), True)
-    logviewer.window(utils.ADDON_NAME, content, default=utils.is_default_window())
-
-
-def upload_log():
-    xbmc.executebuiltin("RunScript(script.kodi.loguploader)")
 
 
 def run():
@@ -54,9 +45,9 @@ def run():
         method = sys.argv[1]
 
         if method == "show_log":
-            show_log()
+            show_log(False)
         elif method == "show_old_log":
-            show_old_log()
+            show_log(True)
         else:
             e = "Method %s does not exist" % method
             raise NotImplementedError(e)

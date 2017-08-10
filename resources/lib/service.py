@@ -11,9 +11,9 @@ class LazyMonitor(xbmc.Monitor):
         self._runner = None
 
     def start(self):
-        if self._runner is not None:
-            self._runner.stop()
-
+        # Assure the runner is stopped
+        self.stop()
+        # Start the runner
         self._runner = Runner()
         self._runner.start()
 
