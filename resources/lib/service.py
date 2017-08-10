@@ -1,8 +1,8 @@
 import xbmc
 import time
+import utils
 import threading
 import logviewer
-from utils import *
 
 
 class LazyMonitor(xbmc.Monitor):
@@ -36,7 +36,7 @@ class Runner(threading.Thread):
         threading.Thread.start(self)
 
     def run(self):
-        if get_setting("error_popup") == "true":
+        if utils.get_setting("error_popup") == "true":
             # Start error monitor
             log_location = logviewer.log_location(False)
             reader = logviewer.LogReader(log_location)
@@ -48,7 +48,7 @@ class Runner(threading.Thread):
                 content = reader.tail()
                 parsed_errors = logviewer.parse_errors(content, set_style=True)
                 if parsed_errors:
-                    logviewer.window(ADDON_NAME, parsed_errors, default=is_default_window())
+                    logviewer.window(utils.ADDON_NAME, parsed_errors, default=utils.is_default_window())
                 xbmc.sleep(500)
 
     def stop(self):

@@ -124,13 +124,17 @@ class TextWindow(xbmcgui.WindowXMLDialog):
         xbmcgui.WindowXML.__init__(self, xml_filename, script_path)
         self.title = title
         self.content = content
+        # Controls IDs
+        self.close_button_id = 32500
+        self.title_label_id = 32501
+        self.text_box_id = 32503
 
     def onInit(self):
-        self.getControl(32501).setLabel(self.title)
-        self.getControl(32503).setText(self.content)
+        self.getControl(self.title_label_id).setLabel(self.title)
+        self.getControl(self.text_box_id).setText(self.content)
 
     def onClick(self, control_id):
-        if control_id == 32500:
+        if control_id == self.close_button_id:
             # Close Button
             self.close()
 
