@@ -1,5 +1,7 @@
 # Log Viewer for Kodi
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c4c768527bc046848761ea3c9ca0fdc8)](https://www.codacy.com/app/i96751414/script.logviewer?utm_source=github.com&utm_medium=referral&utm_content=i96751414/script.logviewer&utm_campaign=badger)
+
 View Kodi logfile directly on Kodi
 
 ![logo](https://github.com/i96751414/script.logviewer/raw/master/resources/images/icon-large.png)
