@@ -27,7 +27,7 @@ msgid "Show Log"
 ""
 
 msgctxt "#30002"
-msgid "Show Old Full Log"
+msgid "Show old Log"
 ""
 
 msgctxt "#30003"

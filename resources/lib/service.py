@@ -57,15 +57,14 @@ class Runner(threading.Thread):
         self.join()
 
 
-def run():
+def run(delay=20):
     # Wait a few seconds for Kodi to start
     initial_time = time.time()
-    while time.time() - initial_time < 20 and not xbmc.abortRequested:
+    while time.time() - initial_time < delay:
+        # Check for abort requested
+        if xbmc.abortRequested:
+            return
         xbmc.sleep(500)
-
-    # Check for abort requested
-    if xbmc.abortRequested:
-        return
 
     # Start the error monitor
     monitor = LazyMonitor()

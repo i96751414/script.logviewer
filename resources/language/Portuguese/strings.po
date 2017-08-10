@@ -30,7 +30,7 @@ msgstr "Mostrar Log"
 
 msgctxt "#30002"
 msgid "Show Old Full Log"
-msgstr "Mostrar Log antigo completo"
+msgstr "Mostrar Log antigo"
 ""
 
 msgctxt "#30003"
