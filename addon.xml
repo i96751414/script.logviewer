@@ -24,7 +24,7 @@
 - Added service for monitoring errors
         </news>
         <assets>
-            <icon>resources/images/icon.png</icon>
+            <icon>icon.png</icon>
             <screenshot>resources/images/screenshot-1.png</screenshot>
             <screenshot>resources/images/screenshot-2.png</screenshot>
             <screenshot>resources/images/screenshot-3.png</screenshot>
