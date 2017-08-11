@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import xbmc
 import time
 import utils
@@ -8,22 +10,24 @@ import logviewer
 class LazyMonitor(xbmc.Monitor):
     def __init__(self):
         xbmc.Monitor.__init__(self)
-        self._runner = None
+        self.runner = None
 
     def start(self):
-        # Assure the runner is stopped
-        self.stop()
-        # Start the runner
-        self._runner = Runner()
-        self._runner.start()
+        if self.runner is None:
+            self.runner = Runner()
+            self.runner.start()
 
     def stop(self):
-        if self._runner is not None:
-            self._runner.stop()
-            self._runner = None
+        if self.runner is not None:
+            self.runner.stop()
+            self.runner = None
+
+    def restart(self):
+        self.stop()
+        self.start()
 
     def onSettingsChanged(self):
-        self.start()
+        self.restart()
 
 
 class Runner(threading.Thread):

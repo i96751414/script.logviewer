@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import xbmcaddon
 
 ADDON = xbmcaddon.Addon()

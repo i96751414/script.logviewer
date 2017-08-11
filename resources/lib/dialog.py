@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Constants
 ACTION_LEFT = 1
 ACTION_RIGHT = 2
