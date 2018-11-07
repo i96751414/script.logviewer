@@ -49,13 +49,14 @@ class Runner(threading.Thread):
                 return
 
             reader = logviewer.LogReader(path)
+            exceptions = utils.parse_exceptions_only()
 
             # Ignore initial errors
             reader.tail()
 
             while not self._monitor.abortRequested() and self._running:
                 content = reader.tail()
-                parsed_errors = logviewer.parse_errors(content, set_style=True)
+                parsed_errors = logviewer.parse_errors(content, set_style=True, exceptions_only=exceptions)
                 if parsed_errors:
                     logviewer.window(utils.ADDON_NAME, parsed_errors, default=utils.is_default_window())
                 self._monitor.waitForAbort(1)

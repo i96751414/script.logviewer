@@ -89,3 +89,7 @@ msgid "Error"
 msgctxt "#30017"
 msgid "Unable to locate log file..."
 ""
+
+msgctxt "#30018"
+msgid "Parse exceptions only"
+""

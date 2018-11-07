@@ -37,3 +37,7 @@ def get_lines():
 
 def is_default_window():
     return get_setting("custom_window") == "false"
+
+
+def parse_exceptions_only():
+    return get_setting("exceptions_only") == "true"

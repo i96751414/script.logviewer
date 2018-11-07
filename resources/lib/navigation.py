@@ -11,6 +11,10 @@ def has_addon(addon_id):
     return xbmc.getCondVisibility("System.HasAddon(%s)" % addon_id) == 1
 
 
+def test_exception():
+    raise Exception
+
+
 def get_opts():
     headings = []
     handlers = []
@@ -31,6 +35,10 @@ def get_opts():
     # Open Settings
     headings.append(utils.translate(30011))
     handlers.append(utils.open_settings)
+
+    # Test - For debug only
+    # headings.append("Test Exception")
+    # handlers.append(test_exception)
 
     return headings, handlers
 

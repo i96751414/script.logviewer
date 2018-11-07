@@ -59,16 +59,17 @@ def set_styles(content):
     return content
 
 
-def parse_errors(content, set_style=False):
+def parse_errors(content, set_style=False, exceptions_only=False):
     if content == "":
         return ""
 
     parsed_content = []
-
     found_error = False
+    pattern = " ERROR: EXCEPTION " if exceptions_only else " ERROR: "
+
     for line in content.splitlines():
         if re.match("^\d{2}:\d{2}:\d{2}", line):
-            if " ERROR: " in line:
+            if pattern in line:
                 found_error = True
                 parsed_content.append(line)
             else:
