@@ -98,3 +98,12 @@ msgid "Upload Log file"
 msgstr "Fazer upload do log"
 ""
 
+msgctxt "#30016"
+msgid "Error"
+msgstr "Erro"
+""
+
+msgctxt "#30017"
+msgid "Unable to locate log file..."
+msgstr "Falha ao localizar ficheiro de log..."
+""

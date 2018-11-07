@@ -82,3 +82,10 @@ msgctxt "#30015"
 msgid "Upload Log file"
 ""
 
+msgctxt "#30016"
+msgid "Error"
+""
+
+msgctxt "#30017"
+msgid "Unable to locate log file..."
+""

@@ -2,6 +2,7 @@
 
 import xbmc
 import utils
+import xbmcgui
 import threading
 import logviewer
 
@@ -44,6 +45,7 @@ class Runner(threading.Thread):
             # Start error monitor
             path = logviewer.log_location(False)
             if path is None:
+                xbmcgui.Dialog().ok(utils.translate(30016), utils.translate(30017))
                 return
 
             reader = logviewer.LogReader(path)

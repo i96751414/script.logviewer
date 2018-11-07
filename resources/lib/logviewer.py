@@ -5,7 +5,7 @@ import re
 import xbmc
 import xbmcgui
 from dialog import *
-from utils import ADDON_PATH
+from utils import ADDON_PATH, translate
 
 
 def get_version_number():
@@ -90,6 +90,7 @@ def get_content(old=False, invert=False, line_number=0, set_style=False):
 
     path = log_location(old)
     if path is None:
+        xbmcgui.Dialog().ok(translate(30016), translate(30017))
         return
 
     f = LogReader(path)
