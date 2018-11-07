@@ -1,26 +1,25 @@
 # -*- coding: utf-8 -*-
 
 import xbmc
-import time
 import utils
 import threading
 import logviewer
 
 
-class LazyMonitor(xbmc.Monitor):
+class Monitor(xbmc.Monitor):
     def __init__(self):
         xbmc.Monitor.__init__(self)
-        self.runner = None
+        self._runner = None
 
     def start(self):
-        if self.runner is None:
-            self.runner = Runner()
-            self.runner.start()
+        if self._runner is None:
+            self._runner = Runner(self)
+            self._runner.start()
 
     def stop(self):
-        if self.runner is not None:
-            self.runner.stop()
-            self.runner = None
+        if self._runner is not None:
+            self._runner.stop()
+            self._runner = None
 
     def restart(self):
         self.stop()
@@ -31,52 +30,51 @@ class LazyMonitor(xbmc.Monitor):
 
 
 class Runner(threading.Thread):
-    def __init__(self):
-        self.running = False
+    def __init__(self, monitor):
+        self._running = False
+        self._monitor = monitor
         threading.Thread.__init__(self)
 
     def start(self):
-        self.running = True
+        self._running = True
         threading.Thread.start(self)
 
     def run(self):
         if utils.get_setting("error_popup") == "true":
             # Start error monitor
-            log_location = logviewer.log_location(False)
-            reader = logviewer.LogReader(log_location)
+            path = logviewer.log_location(False)
+            if path is None:
+                return
+
+            reader = logviewer.LogReader(path)
 
             # Ignore initial errors
             reader.tail()
 
-            while not xbmc.abortRequested and self.running:
+            while not self._monitor.abortRequested() and self._running:
                 content = reader.tail()
                 parsed_errors = logviewer.parse_errors(content, set_style=True)
                 if parsed_errors:
                     logviewer.window(utils.ADDON_NAME, parsed_errors, default=utils.is_default_window())
-                xbmc.sleep(500)
+                self._monitor.waitForAbort(1)
 
     def stop(self):
-        self.running = False
+        self._running = False
         # Wait for thread to stop
         self.join()
 
 
 def run(delay=20):
+    monitor = Monitor()
     # Wait a few seconds for Kodi to start
-    initial_time = time.time()
-    while time.time() - initial_time < delay:
-        # Check for abort requested
-        if xbmc.abortRequested:
-            return
-        xbmc.sleep(500)
+    if monitor.waitForAbort(delay):
+        return
 
     # Start the error monitor
-    monitor = LazyMonitor()
     monitor.start()
 
     # Keep service running
-    while not xbmc.abortRequested:
-        xbmc.sleep(500)
+    monitor.waitForAbort()
 
     # Stop the error monitor
     monitor.stop()

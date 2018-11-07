@@ -3,7 +3,7 @@
 import xbmcaddon
 
 ADDON = xbmcaddon.Addon()
-ADDON_PATH = ADDON.getAddonInfo("path").decode('utf-8')
+ADDON_PATH = ADDON.getAddonInfo("path").decode("utf-8")
 ADDON_NAME = ADDON.getAddonInfo("name")
 
 

@@ -31,23 +31,22 @@ def log_location(old=False):
     else:
         log_path = xbmc.translatePath("special://logpath")
 
-    if version_number < 14:
-        filename = "xbmc.log"
-        filename_old = "xbmc.old.log"
-    else:
-        filename = "kodi.log"
-        filename_old = "kodi.old.log"
+    filename_old = None
+    filename = None
 
-    if not os.path.exists(os.path.join(log_path, filename)):
-        if os.path.exists(os.path.join(log_path, "spmc.log")):
-            filename = "spmc.log"
-            filename_old = "spmc.old.log"
-        else:
-            return False
+    for file in os.listdir(log_path):
+        if file.endswith(".old.log"):
+            filename_old = file
+        elif file.endswith(".log"):
+            filename = file
 
     if old:
+        if filename_old is None:
+            return None
         log_path = os.path.join(log_path, filename_old)
     else:
+        if filename is None:
+            return None
         log_path = os.path.join(log_path, filename)
 
     return log_path.decode("utf-8")
@@ -89,7 +88,11 @@ def get_content(old=False, invert=False, line_number=0, set_style=False):
     if not invert:
         line_number = 0
 
-    f = LogReader(log_location(old))
+    path = log_location(old)
+    if path is None:
+        return
+
+    f = LogReader(path)
     content = f.read(invert, line_number)
 
     if set_style:
@@ -147,20 +150,20 @@ class TextWindow(xbmcgui.WindowXMLDialog):
 
 class LogReader(object):
     def __init__(self, filename, buf_size=8192):
-        self.filename = filename
-        self.buf_size = buf_size
-        self.offset = 0
+        self._filename = filename
+        self._buf_size = buf_size
+        self._offset = 0
 
     def tail(self):
         file_size = self.file_size()
-        if file_size < self.offset:
-            self.offset = 0
-        if file_size == self.offset:
+        if file_size < self._offset:
+            self._offset = 0
+        if file_size == self._offset:
             return ""
 
-        with open(self.filename) as fh:
-            fh.seek(self.offset)
-            self.offset = file_size
+        with open(self._filename) as fh:
+            fh.seek(self._offset)
+            self._offset = file_size
             return fh.read()
 
     def read(self, invert=False, lines_number=0):
@@ -175,18 +178,18 @@ class LogReader(object):
     def normal_read_lines(self, lines_number=0):
         """a generator that returns the lines of a file"""
         total = 0
-        with open(self.filename) as fh:
+        with open(self._filename) as fh:
             segment = None
             file_size = self.file_size()
             while file_size - fh.tell() > 0 and (total < lines_number or lines_number == 0):
-                buf = fh.read(self.buf_size)
+                buf = fh.read(self._buf_size)
                 lines = buf.split("\n")
                 # the last line of the buffer is probably not a complete line so
                 # we'll save it and prepend it to the first line of the next buffer
                 # we read
                 if segment is not None:
                     # if the previous chunk starts right from the beginning of line
-                    # do not concact the segment to the first line of new chunk
+                    # do not concat the segment to the first line of new chunk
                     # instead, yield the segment first
                     if buf[-1] is not "\n":
                         lines[0] = segment + lines[0]
@@ -204,24 +207,24 @@ class LogReader(object):
 
     def reverse_read_lines(self, lines_number=0):
         """a generator that returns the lines of a file in reverse order"""
-        with open(self.filename) as fh:
+        with open(self._filename) as fh:
             segment = None
             offset = 0
             total = 0
             fh.seek(0, os.SEEK_END)
             file_size = remaining_size = fh.tell()
             while remaining_size > 0 and (total < lines_number or lines_number == 0):
-                offset = min(file_size, offset + self.buf_size)
+                offset = min(file_size, offset + self._buf_size)
                 fh.seek(file_size - offset)
-                buf = fh.read(min(remaining_size, self.buf_size))
-                remaining_size -= self.buf_size
+                buf = fh.read(min(remaining_size, self._buf_size))
+                remaining_size -= self._buf_size
                 lines = buf.split("\n")
                 # the first line of the buffer is probably not a complete line so
                 # we'll save it and append it to the last line of the next buffer
                 # we read
                 if segment is not None:
                     # if the previous chunk starts right from the beginning of line
-                    # do not concact the segment to the last line of new chunk
+                    # do not concat the segment to the last line of new chunk
                     # instead, yield the segment first
                     if buf[-1] is not "\n":
                         lines[-1] += segment
@@ -238,4 +241,4 @@ class LogReader(object):
                 yield segment
 
     def file_size(self):
-        return os.path.getsize(self.filename)
+        return os.path.getsize(self._filename)
