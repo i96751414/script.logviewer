@@ -3,6 +3,7 @@
 import os
 import re
 import xbmc
+import json
 import xbmcgui
 from dialog import *
 from utils import ADDON_PATH, translate
@@ -10,6 +11,16 @@ from utils import ADDON_PATH, translate
 
 def get_version_number():
     return int(xbmc.getInfoLabel("System.BuildVersion")[0:2])
+
+
+def get_application_name():
+    cmd = ('{"jsonrpc":"2.0", "method":"Application.GetProperties",'
+           '"params": {"properties": ["name"]}, "id":1}')
+    data = json.loads(xbmc.executeJSONRPC(cmd))
+    if "result" in data and "name" in data["result"]:
+        return data["result"]["name"]
+    else:
+        raise ValueError
 
 
 def log_location(old=False):
@@ -31,14 +42,19 @@ def log_location(old=False):
     else:
         log_path = xbmc.translatePath("special://logpath")
 
-    filename_old = None
-    filename = None
+    try:
+        app_name = get_application_name().lower()
+        filename = "{}.log".format(app_name)
+        filename_old = "{}.old.log".format(app_name)
+    except ValueError:
+        filename_old = None
+        filename = None
 
-    for file in os.listdir(log_path):
-        if file.endswith(".old.log"):
-            filename_old = file
-        elif file.endswith(".log"):
-            filename = file
+        for file in os.listdir(log_path):
+            if file.endswith(".old.log"):
+                filename_old = file
+            elif file.endswith(".log"):
+                filename = file
 
     if old:
         if filename_old is None:
