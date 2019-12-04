@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import xbmc
-import utils
 import xbmcgui
 import threading
-import logviewer
+
+from resources.lib import logviewer, utils
 
 
 class Monitor(xbmc.Monitor):
