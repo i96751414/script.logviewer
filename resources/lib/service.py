@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import threading
+
 import xbmc
 import xbmcgui
-import threading
 
 from resources.lib import logviewer, utils
 
 
 class Monitor(xbmc.Monitor):
     def __init__(self):
-        xbmc.Monitor.__init__(self)
+        super(Monitor, self).__init__()
         self._runner = None
 
     def start(self):
@@ -34,14 +35,14 @@ class Runner(threading.Thread):
     def __init__(self, monitor):
         self._running = False
         self._monitor = monitor
-        threading.Thread.__init__(self)
+        super(Runner, self).__init__()
 
     def start(self):
         self._running = True
-        threading.Thread.start(self)
+        super(Runner, self).start()
 
     def run(self):
-        if utils.get_setting("error_popup") == "true":
+        if utils.get_boolean("error_popup"):
             # Start error monitor
             path = logviewer.log_location(False)
             if path is None:
@@ -67,10 +68,11 @@ class Runner(threading.Thread):
         self.join()
 
 
-def run(delay=20):
+def run(start_delay=20):
     monitor = Monitor()
     # Wait a few seconds for Kodi to start
-    if monitor.waitForAbort(delay):
+    # This will also ignore initial exceptions
+    if monitor.waitForAbort(start_delay):
         return
 
     # Start the error monitor

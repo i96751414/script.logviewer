@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import json
 import os
 import re
+import time
+
 import xbmc
-import json
 import xbmcgui
 
-from resources.lib.utils import ADDON_PATH, PY3, translate
 from resources.lib.dialog import *
+from resources.lib.utils import ADDON_PATH, PY3, translate
 
 
 def get_version_number():
@@ -76,6 +78,9 @@ def set_styles(content):
     return content
 
 
+log_entry_regex = re.compile(r"^(?:\d{4}-\d{2}-\d{2} )?\d{2}:\d{2}:\d{2}")
+
+
 def parse_errors(content, set_style=False, exceptions_only=False):
     if content == "":
         return ""
@@ -85,7 +90,7 @@ def parse_errors(content, set_style=False, exceptions_only=False):
     pattern = " ERROR: EXCEPTION " if exceptions_only else " ERROR: "
 
     for line in content.splitlines():
-        if re.match("^\d{2}:\d{2}:\d{2}", line) or re.match("^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}", line):
+        if log_entry_regex.match(line):
             if pattern in line:
                 found_error = True
                 parsed_content.append(line)
@@ -120,20 +125,20 @@ def get_content(old=False, invert=False, line_number=0, set_style=False):
     return content
 
 
-def window(title, content, default=True, timeout=1000):
+def window(title, content, default=True, timeout=1):
     if default:
         window_id = 10147
         control_label = 1
         control_textbox = 5
 
-        xbmc.executebuiltin("ActivateWindow(%s)" % window_id)
+        xbmc.executebuiltin("ActivateWindow({})".format(window_id))
         w = xbmcgui.Window(window_id)
 
         # Wait for window to open
-        time_passed = 0
-        while not xbmc.getCondVisibility("Window.IsVisible(%s)" % window_id) and time_passed < timeout:
+        start_time = time.time()
+        while (not xbmc.getCondVisibility("Window.IsVisible({})".format(window_id)) and
+               time.time() - start_time < timeout):
             xbmc.sleep(100)
-            time_passed += 100
 
         w.getControl(control_label).setLabel(title)
         w.getControl(control_textbox).setText(content)
@@ -145,7 +150,7 @@ def window(title, content, default=True, timeout=1000):
 
 class TextWindow(xbmcgui.WindowXMLDialog):
     def __init__(self, xml_filename, script_path, title, content):
-        xbmcgui.WindowXML.__init__(self, xml_filename, script_path)
+        super(TextWindow, self).__init__(xml_filename, script_path)
         self.title = title
         self.content = content
         # Controls IDs
