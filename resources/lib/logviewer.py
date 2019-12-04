@@ -5,8 +5,9 @@ import re
 import xbmc
 import json
 import xbmcgui
-from dialog import *
-from utils import ADDON_PATH, translate
+
+from resources.lib.utils import ADDON_PATH, PY3, translate
+from resources.lib.dialog import *
 
 
 def get_version_number():
@@ -65,7 +66,7 @@ def log_location(old=False):
             return None
         log_path = os.path.join(log_path, filename)
 
-    return log_path.decode("utf-8")
+    return log_path if PY3 else log_path.decode("utf-8")
 
 
 def set_styles(content):
@@ -84,7 +85,7 @@ def parse_errors(content, set_style=False, exceptions_only=False):
     pattern = " ERROR: EXCEPTION " if exceptions_only else " ERROR: "
 
     for line in content.splitlines():
-        if re.match("^\d{2}:\d{2}:\d{2}", line):
+        if re.match("^\d{2}:\d{2}:\d{2}", line) or re.match("^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}", line):
             if pattern in line:
                 found_error = True
                 parsed_content.append(line)

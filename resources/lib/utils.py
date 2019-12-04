@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import xbmcaddon
 
+PY3 = sys.version_info.major >= 3
+
 ADDON = xbmcaddon.Addon()
-ADDON_PATH = ADDON.getAddonInfo("path").decode("utf-8")
+ADDON_PATH = ADDON.getAddonInfo("path") if PY3 else ADDON.getAddonInfo("path").decode("utf-8")
 ADDON_NAME = ADDON.getAddonInfo("name")
 
 
 def translate(text):
-    return ADDON.getLocalizedString(text).encode("utf-8")
+    return ADDON.getLocalizedString(text) if PY3 else ADDON.getLocalizedString(text).encode("utf-8")
 
 
 def get_setting(setting):

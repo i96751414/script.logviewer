@@ -2,10 +2,9 @@
 
 import sys
 import xbmc
-import utils
 import xbmcgui
-import logviewer
 
+from resources.lib import logviewer, utils
 
 def has_addon(addon_id):
     return xbmc.getCondVisibility("System.HasAddon(%s)" % addon_id) == 1
