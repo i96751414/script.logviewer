@@ -8,7 +8,8 @@ import time
 import xbmc
 import xbmcgui
 
-from resources.lib.dialog import *
+from resources.lib.dialog import ACTION_PARENT_DIR, KEY_NAV_BACK, ACTION_PREVIOUS_MENU
+from resources.lib.logreader import LogReader
 from resources.lib.utils import ADDON_PATH, PY3, translate
 
 
@@ -170,99 +171,3 @@ class TextWindow(xbmcgui.WindowXMLDialog):
     def onAction(self, action):
         if action.getId() in [ACTION_PARENT_DIR, KEY_NAV_BACK, ACTION_PREVIOUS_MENU]:
             self.close()
-
-
-class LogReader(object):
-    def __init__(self, filename, buf_size=8192):
-        self._filename = filename
-        self._buf_size = buf_size
-        self._offset = 0
-
-    def tail(self):
-        file_size = self.file_size()
-        if file_size < self._offset:
-            self._offset = 0
-        if file_size == self._offset:
-            return ""
-
-        with open(self._filename) as fh:
-            fh.seek(self._offset)
-            self._offset = file_size
-            return fh.read()
-
-    def read(self, invert=False, lines_number=0):
-        return "\n".join(line for line in self.read_lines(invert, lines_number))
-
-    def read_lines(self, invert=False, lines_number=0):
-        if invert:
-            return self.reverse_read_lines(lines_number)
-        else:
-            return self.normal_read_lines(lines_number)
-
-    def normal_read_lines(self, lines_number=0):
-        """a generator that returns the lines of a file"""
-        total = 0
-        with open(self._filename) as fh:
-            segment = None
-            file_size = self.file_size()
-            while file_size - fh.tell() > 0 and (total < lines_number or lines_number == 0):
-                buf = fh.read(self._buf_size)
-                lines = buf.split("\n")
-                # the last line of the buffer is probably not a complete line so
-                # we'll save it and prepend it to the first line of the next buffer
-                # we read
-                if segment is not None:
-                    # if the previous chunk starts right from the beginning of line
-                    # do not concat the segment to the first line of new chunk
-                    # instead, yield the segment first
-                    if buf[-1] is not "\n":
-                        lines[0] = segment + lines[0]
-                    else:
-                        total += 1
-                        yield segment
-                segment = lines[-1]
-                for index in range(0, len(lines) - 1):
-                    if len(lines[index]) and (total < lines_number or lines_number == 0):
-                        total += 1
-                        yield lines[index]
-            # Don't yield None if the file was empty
-            if segment is not None and (total < lines_number or lines_number == 0):
-                yield segment
-
-    def reverse_read_lines(self, lines_number=0):
-        """a generator that returns the lines of a file in reverse order"""
-        with open(self._filename) as fh:
-            segment = None
-            offset = 0
-            total = 0
-            fh.seek(0, os.SEEK_END)
-            file_size = remaining_size = fh.tell()
-            while remaining_size > 0 and (total < lines_number or lines_number == 0):
-                offset = min(file_size, offset + self._buf_size)
-                fh.seek(file_size - offset)
-                buf = fh.read(min(remaining_size, self._buf_size))
-                remaining_size -= self._buf_size
-                lines = buf.split("\n")
-                # the first line of the buffer is probably not a complete line so
-                # we'll save it and append it to the last line of the next buffer
-                # we read
-                if segment is not None:
-                    # if the previous chunk starts right from the beginning of line
-                    # do not concat the segment to the last line of new chunk
-                    # instead, yield the segment first
-                    if buf[-1] is not "\n":
-                        lines[-1] += segment
-                    else:
-                        total += 1
-                        yield segment
-                segment = lines[0]
-                for index in range(len(lines) - 1, 0, -1):
-                    if len(lines[index]) and (total < lines_number or lines_number == 0):
-                        total += 1
-                        yield lines[index]
-            # Don't yield None if the file was empty
-            if segment is not None and (total < lines_number or lines_number == 0):
-                yield segment
-
-    def file_size(self):
-        return os.path.getsize(self._filename)

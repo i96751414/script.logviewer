@@ -6,6 +6,7 @@ import xbmc
 import xbmcgui
 
 from resources.lib import logviewer, utils
+from resources.lib.logreader import LogReader
 
 
 class Monitor(xbmc.Monitor):
@@ -49,7 +50,7 @@ class Runner(threading.Thread):
                 xbmcgui.Dialog().ok(utils.translate(30016), utils.translate(30017))
                 return
 
-            reader = logviewer.LogReader(path)
+            reader = LogReader(path)
             exceptions = utils.parse_exceptions_only()
 
             # Ignore initial errors

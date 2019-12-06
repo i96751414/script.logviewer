@@ -16,7 +16,6 @@ if PY3:
 else:
     ADDON_PATH = ADDON_PATH.decode("utf-8")
 
-
     def translate(text):
         return ADDON.getLocalizedString(text).encode("utf-8")
 
