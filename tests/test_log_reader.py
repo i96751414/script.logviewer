@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 from tempfile import NamedTemporaryFile
 from unittest import TestCase, main
 
-from resources.lib.logreader import LogReader, encode, decode, SEPARATOR
+if sys.version_info >= (3, 3):
+    from unittest.mock import MagicMock
+else:
+    from mock import MagicMock
+
+sys.modules["xbmc"] = MagicMock()
+sys.modules["xbmcaddon"] = MagicMock()
+from resources.lib.logreader import LogReader, SEPARATOR  # noqa
+from resources.lib.utils import decode, encode  # noqa
 
 
 class TestLogReader(TestCase):

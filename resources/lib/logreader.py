@@ -1,22 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
+
+from resources.lib.utils import decode
 
 SEPARATOR = b"\n"
-
-if sys.version_info.major >= 3:
-    def encode(s):
-        return s.encode("utf-8")
-
-    def decode(s):
-        return s.decode("utf-8")
-else:
-    def encode(s):
-        return s
-
-    def decode(s):
-        return s
 
 
 class LogReader(object):
