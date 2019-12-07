@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from io import FileIO
 
 from resources.lib.utils import decode
 
@@ -20,7 +21,7 @@ class LogReader(object):
         if file_size == self._offset:
             return ""
 
-        with open(self._filename, "rb") as fh:
+        with FileIO(self._filename, "rb") as fh:
             fh.seek(self._offset)
             self._offset = file_size
             return decode(fh.read())
@@ -36,7 +37,7 @@ class LogReader(object):
 
     def normal_read_lines(self, lines_number=0):
         """a generator that returns the lines of a file"""
-        with open(self._filename, "rb") as fh:
+        with FileIO(self._filename, "rb") as fh:
             segment = None
             total = 0
             remaining_size = self.file_size()
@@ -70,7 +71,7 @@ class LogReader(object):
 
     def reverse_read_lines(self, lines_number=0):
         """a generator that returns the lines of a file in reverse order"""
-        with open(self._filename, "rb") as fh:
+        with FileIO(self._filename, "rb") as fh:
             segment = None
             total = offset = 0
             file_size = remaining_size = self.file_size()
