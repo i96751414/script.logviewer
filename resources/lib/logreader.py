@@ -41,8 +41,9 @@ class LogReader(object):
             total = 0
             remaining_size = self.file_size()
             while remaining_size > 0 and (lines_number == 0 or total < lines_number):
-                buf = fh.read(self._buf_size)
-                remaining_size -= self._buf_size
+                buf_size = self._buf_size if self._buf_size < remaining_size else remaining_size
+                buf = fh.read(buf_size)
+                remaining_size -= buf_size
                 lines = buf.split(SEPARATOR)
                 start = 0
                 # the last line of the buffer is probably not a complete line so
@@ -72,11 +73,11 @@ class LogReader(object):
         with open(self._filename, "rb") as fh:
             segment = None
             total = offset = 0
-            remaining_size = self.file_size()
+            file_size = remaining_size = self.file_size()
             while remaining_size > 0 and (lines_number == 0 or total < lines_number):
                 buf_size = self._buf_size if self._buf_size < remaining_size else remaining_size
-                offset -= buf_size
-                fh.seek(offset, os.SEEK_END)
+                offset += buf_size
+                fh.seek(file_size - offset)
                 buf = fh.read(buf_size)
                 remaining_size -= buf_size
                 lines = buf.split(SEPARATOR)

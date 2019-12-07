@@ -47,20 +47,31 @@ class TestLogReader(TestCase):
 
     def test_normal_read_lines(self):
         reader = LogReader(self.f.name)
-        lines = list(reader.normal_read_lines())
         original_lines = self.lines.split(decode(SEPARATOR))
+        self._test_read_lines(reader.normal_read_lines, original_lines)
 
+    def test_reverse_read_lines(self):
+        reader = LogReader(self.f.name)
+        original_lines = list(reversed(self.lines.split(decode(SEPARATOR))))
+        self._test_read_lines(reader.reverse_read_lines, original_lines)
+
+    def _test_read_lines(self, read_lines, original_lines):
+        # Normal test
+        lines = list(read_lines())
         self.assertEqual(len(lines), len(original_lines))
         for i, l in enumerate(original_lines):
             self.assertEqual(l, lines[i])
 
-    def test_reverse_read_lines(self):
-        reader = LogReader(self.f.name)
-        lines = list(reader.reverse_read_lines())
-        original_lines = self.lines.split(decode(SEPARATOR))
+        # Also test when file is being updated
+        lines = []
+        for i, l in enumerate(read_lines()):
+            lines.append(l)
+            if i % 1000 == 0:
+                self.f.write(b"a\n")
+                self.f.flush()
 
         self.assertEqual(len(lines), len(original_lines))
-        for i, l in enumerate(reversed(original_lines)):
+        for i, l in enumerate(original_lines):
             self.assertEqual(l, lines[i])
 
 
