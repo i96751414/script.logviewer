@@ -26,6 +26,12 @@ class LogReader(object):
             self._offset = file_size
             return decode(fh.read())
 
+    def set_offset(self, offset):
+        self._offset = offset
+
+    def get_offset(self):
+        return self._offset
+
     def read(self, invert=False, lines_number=0):
         return "\n".join(line for line in self.read_lines(invert, lines_number))
 

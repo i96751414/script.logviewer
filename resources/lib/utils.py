@@ -39,8 +39,12 @@ def get_setting(setting):
     return ADDON.getSetting(setting)
 
 
-def get_boolean(setting):
+def get_boolean_setting(setting):
     return get_setting(setting) == "true"
+
+
+def get_int_setting(setting):
+    return int(get_setting(setting))
 
 
 def open_settings():
@@ -48,7 +52,7 @@ def open_settings():
 
 
 def get_inverted():
-    return get_boolean("invert")
+    return get_boolean_setting("invert")
 
 
 def get_lines():
@@ -64,11 +68,11 @@ def get_lines():
 
 
 def is_default_window():
-    return not get_boolean("custom_window")
+    return not get_boolean_setting("custom_window")
 
 
 def parse_exceptions_only():
-    return get_boolean("exceptions_only")
+    return get_boolean_setting("exceptions_only")
 
 
 class KodiLogHandler(logging.StreamHandler):
@@ -83,7 +87,7 @@ class KodiLogHandler(logging.StreamHandler):
 
     def __init__(self):
         super(KodiLogHandler, self).__init__()
-        self.setFormatter(logging.Formatter("[{}] %(name)s: %(message)s".format(ADDON_ID)))
+        self.setFormatter(logging.Formatter("[{}] %(message)s".format(ADDON_ID)))
 
     def emit(self, record):
         xbmc.log(self.format(record), self.levels[record.levelno])
