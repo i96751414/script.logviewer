@@ -29,25 +29,25 @@ class Monitor(xbmc.Monitor):
 
     def _start_error_popup_runner(self):
         if self._error_popup_runner is None:
-            logging.info("Starting error popup runner")
+            logging.debug("Starting error popup runner")
             self._error_popup_runner = ErrorPopupRunner(self)
             self._error_popup_runner.start()
 
     def _stop_error_popup_runner(self):
         if self._error_popup_runner is not None:
-            logging.info("Stopping error popup runner")
+            logging.debug("Stopping error popup runner")
             self._error_popup_runner.stop()
             self._error_popup_runner = None
 
     def _start_http_server_runner(self):
         if self._http_server_runner is None:
-            logging.info("Starting http server runner")
+            logging.debug("Starting http server runner")
             self._http_server_runner = HTTPServerRunner(self, utils.get_int_setting("port"))
             self._http_server_runner.start()
 
     def _stop_http_server_runner(self):
         if self._http_server_runner is not None:
-            logging.info("Stopping http server runner")
+            logging.debug("Stopping http server runner")
             self._http_server_runner.stop()
             self._http_server_runner = None
 
@@ -71,8 +71,8 @@ class HTTPServerRunner(threading.Thread):
         self._server = ThreadedHTTPServer(("", self._port), ServerHandler)
         self._server.daemon_threads = True
 
-        logging.info("Server started at port {}".format(self._port))
-        logging.info("Local IP: {}".format(xbmc.getIPAddress()))
+        logging.debug("Server started at port {}".format(self._port))
+        logging.debug("Local IP: {}".format(xbmc.getIPAddress()))
 
         self._server.serve_until_shutdown(self._monitor.abortRequested)
         self._server.server_close()

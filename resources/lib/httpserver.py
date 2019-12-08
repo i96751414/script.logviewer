@@ -3,14 +3,13 @@
 import logging
 import os
 import shutil
-import sys
 import threading
 
 from resources.lib.logreader import LogReader
 from resources.lib.logviewer import log_location
-from resources.lib.utils import ADDON_PATH, encode
+from resources.lib.utils import ADDON_PATH, encode, PY3
 
-if sys.version_info.major >= 3:
+if PY3:
     import urllib.parse as urlparse
     from socketserver import ThreadingMixIn
     from http.server import BaseHTTPRequestHandler, HTTPServer

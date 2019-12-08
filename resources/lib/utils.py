@@ -96,7 +96,7 @@ class KodiLogHandler(logging.StreamHandler):
         pass
 
 
-def set_logger(name=None, level=logging.INFO):
+def set_logger(name=None, level=logging.DEBUG):
     logger = logging.getLogger(name)
     logger.addHandler(KodiLogHandler())
     logger.setLevel(level)

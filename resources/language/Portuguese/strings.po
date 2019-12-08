@@ -120,5 +120,5 @@ msgstr "Activar servidor HTTP"
 
 msgctxt "#30020"
 msgid "Port"
-msgstr "Porta"
+msgstr "Porto"
 ""

@@ -19,8 +19,6 @@
         <description lang="pt">Ferramenta para verificar e ler facilmente o log do Kodi.</description>
         <platform>all</platform>
         <news>
-- Python 3 compatibility
-- Fix log error detection service after kodi's migration to libfmt
 - Fix android file handling
 - Add http server (webtail)
         </news>
