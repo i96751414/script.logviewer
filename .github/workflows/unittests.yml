@@ -2,6 +2,8 @@ name: Python unittests
 
 on:
   push:
+    branches:
+      - '*'
     tags-ignore:
       - v*
   pull_request:
