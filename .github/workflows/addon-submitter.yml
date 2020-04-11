@@ -29,7 +29,7 @@ jobs:
 
     - name: Kodi addon checker validation
       id: kodi-addon-checker
-      uses: xbmc/action-kodi-addon-checker@v1.1
+      uses: xbmc/action-kodi-addon-checker@v1.2
       with:
         kodi-version: ${{ steps.extract_branch_pr.outputs.branch }}
         addon-id: ${{ github.event.repository.name }}
@@ -37,7 +37,7 @@ jobs:
 
     - name: Generate distribution zip and submit to official kodi repository
       id: kodi-addon-submitter
-      uses: xbmc/action-kodi-addon-submitter@v1.1
+      uses: xbmc/action-kodi-addon-submitter@v1.2
       with: # Replace all the below values
         kodi-repository: ${{ steps.extract_branch_pr.outputs.repo }}
         kodi-version: ${{ steps.extract_branch_pr.outputs.branch }}
