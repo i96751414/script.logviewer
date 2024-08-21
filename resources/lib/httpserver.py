@@ -81,8 +81,11 @@ class ServerHandler(BaseHTTPRequestHandler):
                 self.end_headers()
         except Exception as e:
             logging.error(e)
-            self.send_response(500)
-            self.end_headers()
+            try:
+                self.send_response(500)
+                self.end_headers()
+            except:
+                ...
 
     def send_response_and_end(self, code, message=None):
         self.send_response(code, message=message)
