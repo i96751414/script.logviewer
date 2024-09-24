@@ -19,7 +19,7 @@ jobs:
         env:
           ADDON_ID: ${{ github.event.repository.name }}
         run: |
-          echo "branch=$(git --no-pager branch -a --contains "$GITHUB_SHA" | grep 'remotes/origin/' | cut -d '/' -f3)" >>"${GITHUB_OUTPUT}"
+          echo "branch=$(perl -ne '/version="\d+\.\d+\.\d+\+([^"]+)\.\d+"/ && print $1' addon.xml)" >>"${GITHUB_OUTPUT}"
           if [[ $ADDON_ID == plugin* ]]; then
             echo "repo=repo-plugins" >>"${GITHUB_OUTPUT}"
           else
