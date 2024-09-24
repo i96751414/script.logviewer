@@ -79,6 +79,8 @@ class ServerHandler(BaseHTTPRequestHandler):
             else:
                 self.send_response(404)
                 self.end_headers()
+        except BrokenPipeError as e:
+            raise e
         except Exception as e:
             logging.error(e)
             self.send_response(500)
