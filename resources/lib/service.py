@@ -7,7 +7,7 @@ import xbmc
 import xbmcgui
 
 from resources.lib import logviewer, utils
-from resources.lib.httpserver import ThreadedHTTPServer, ServerHandler
+from resources.lib.httpserver import ThreadedHTTPServer, HTTPRequestHandler
 from resources.lib.logreader import LogReader
 
 
@@ -80,7 +80,7 @@ class HTTPServerRunner(threading.Thread):
         super(HTTPServerRunner, self).__init__()
 
     def run(self):
-        self._server = server = ThreadedHTTPServer(("", self._port), ServerHandler)
+        self._server = server = ThreadedHTTPServer(("", self._port), HTTPRequestHandler)
         logging.debug("Server started at port %d", self._port)
         logging.debug("Local IP is %s", xbmc.getIPAddress())
         server.serve_forever()
