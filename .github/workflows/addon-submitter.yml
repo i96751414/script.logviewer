@@ -7,7 +7,7 @@ on:
 
 jobs:
   kodi-addon-submitter:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: Kodi Addon Submitter
     steps:
       - name: Checkout

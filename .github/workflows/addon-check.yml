@@ -12,7 +12,7 @@ on:
 
 jobs:
   kodi-addon-checker:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: Kodi addon checker
     steps:
       - name: Checkout
