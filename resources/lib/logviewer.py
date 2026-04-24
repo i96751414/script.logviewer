@@ -93,6 +93,16 @@ def set_styles(content):
     return content
 
 
+def preserve_indentation(content):
+    lines = content.splitlines()
+    fixed = []
+    for line in lines:
+        stripped = line.lstrip(' ')
+        n = len(line) - len(stripped)
+        fixed.append('\u00a0' * n + stripped)
+    return '\n'.join(fixed)
+
+
 def parse_errors(content, set_style=False, exceptions_only=False):
     if content == "":
         return ""
@@ -116,6 +126,8 @@ def parse_errors(content, set_style=False, exceptions_only=False):
     if set_style:
         parsed_content = set_styles(parsed_content)
 
+    parsed_content = preserve_indentation(parsed_content)
+
     return parsed_content
 
 
@@ -134,8 +146,9 @@ def get_content(old=False, invert=False, line_number=0, set_style=False):
     if set_style:
         content = set_styles(content)
 
-    return content
+    content = preserve_indentation(content)
 
+    return content
 
 def window(title, content, default=True, timeout=1):
     if default:
