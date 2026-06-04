@@ -73,7 +73,7 @@ def log_location(old=False):
     return str_to_unicode(log_path)
 
 
-log_entry_regex = re.compile(r"(?:\d{4}-\d{2}-\d{2} )?\d{2}:\d{2}:\d{2}")
+log_entry_regex = re.compile(r"^(?:\d{4}-\d{2}-\d{2} )?\d{2}:\d{2}:\d{2}")
 log_error_regex = re.compile(r" (ERROR|error)(?: <[^>]*>)?: ")
 log_warning_regex = re.compile(r" (WARNING|warning)(?: <[^>]*>)?: ")
 log_exception_regex = re.compile(log_error_regex.pattern + "EXCEPTION ")
@@ -93,42 +93,40 @@ def set_styles(content):
     return content
 
 
-def preserve_indentation(content):
-    lines = content.splitlines()
-    fixed = []
-    for line in lines:
-        stripped = line.lstrip(' ')
-        n = len(line) - len(stripped)
-        fixed.append('\u00a0' * n + stripped)
-    return '\n'.join(fixed)
+def preserve_indentation(line):
+    stripped = line.lstrip(" ")
+    return (len(line) - len(stripped)) * "\u00a0" + stripped
 
 
-def parse_errors(content, set_style=False, exceptions_only=False):
-    if content == "":
-        return ""
-
-    parsed_content = []
-    found_error = False
+def parse_errors(content, exceptions_only=False):
     pattern = log_exception_regex if exceptions_only else log_error_regex
+    found_error = False
 
     for line in content.splitlines():
         if log_entry_regex.match(line):
             if pattern.search(line):
                 found_error = True
-                parsed_content.append(line)
+                yield line
             else:
                 found_error = False
         elif found_error:
-            parsed_content.append(line)
+            yield line
 
-    parsed_content = "\n".join(parsed_content)
+
+def process_content_lines(lines, set_style=False):
+    content = "\n".join(preserve_indentation(line) for line in lines)
 
     if set_style:
-        parsed_content = set_styles(parsed_content)
+        content = set_styles(content)
 
-    parsed_content = preserve_indentation(parsed_content)
+    return content
 
-    return parsed_content
+
+def get_errors(content, set_style=False, exceptions_only=False):
+    if not content:
+        return ""
+
+    return process_content_lines(parse_errors(content, exceptions_only=exceptions_only), set_style=set_style)
 
 
 def get_content(old=False, invert=False, line_number=0, set_style=False):
@@ -138,17 +136,10 @@ def get_content(old=False, invert=False, line_number=0, set_style=False):
     path = log_location(old)
     if path is None:
         xbmcgui.Dialog().ok(translate(30016), translate(30017))
-        return
+        return None
 
-    f = LogReader(path)
-    content = f.read(invert, line_number)
+    return process_content_lines(LogReader(path).read_lines(invert, line_number), set_style=set_style)
 
-    if set_style:
-        content = set_styles(content)
-
-    content = preserve_indentation(content)
-
-    return content
 
 def window(title, content, default=True, timeout=1):
     if default:
