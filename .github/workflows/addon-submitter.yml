@@ -35,7 +35,7 @@ jobs:
 
       - name: Kodi addon checker validation
         id: kodi-addon-checker
-        uses: xbmc/action-kodi-addon-checker@v1.2
+        uses: xbmc/action-kodi-addon-checker@v1.3
         with:
           kodi-version: ${{ steps.extract_branch_pr.outputs.branch }}
           addon-id: ${{ github.event.repository.name }}
